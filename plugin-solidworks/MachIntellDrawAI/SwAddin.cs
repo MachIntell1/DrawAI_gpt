@@ -86,7 +86,7 @@ namespace MachIntellDrawAI
             catch (Exception ex)
             {
                 _log?.Error("generation-failed", ex);
-                MessageBox.Show(ex.Message, "Drawing generation stopped", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Infrastructure.ExceptionText.Describe(ex), "Drawing generation stopped", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

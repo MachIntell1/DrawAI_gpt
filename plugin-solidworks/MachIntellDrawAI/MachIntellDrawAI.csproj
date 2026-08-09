@@ -32,6 +32,6 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\settings.example.json" Link="settings.example.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\settings.example.json" Link="settings.example.json" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\settings.example.json')" />
   </ItemGroup>
 </Project>

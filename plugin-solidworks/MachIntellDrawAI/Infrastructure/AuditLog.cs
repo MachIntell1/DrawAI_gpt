@@ -16,7 +16,7 @@ namespace MachIntellDrawAI.Infrastructure
         }
 
         public void Info(string eventName, string message) => Write("INFO", eventName, message);
-        public void Error(string eventName, Exception exception) => Write("ERROR", eventName, exception.GetType().Name + ": " + exception.Message);
+        public void Error(string eventName, Exception exception) => Write("ERROR", eventName, ExceptionText.DescribeVerbose(exception));
 
         private void Write(string level, string eventName, string message)
         {
