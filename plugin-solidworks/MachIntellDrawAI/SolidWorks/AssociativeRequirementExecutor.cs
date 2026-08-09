@@ -253,7 +253,7 @@ namespace MachIntellDrawAI.SolidWorks
             if (!(entities[0] is IEntity entity) || !entity.Select4(false, null))
                 throw new InvalidOperationException("Center-mark circular edge could not be selected.");
             var created = _drawing.Drawing.InsertCenterMark2(0, true);
-            if (created == null || (created is bool success && !success))
+            if (created == null)
                 throw new InvalidOperationException("SolidWorks failed to create an associative center mark.");
         }
 

@@ -161,7 +161,7 @@ namespace MachIntellDrawAI
         {
             var lines = gate.Blockers.Take(8).Select(f => $"• {f.Code}: {f.Message}").ToList();
             if (gate.Blockers.Count > lines.Count) lines.Add($"• …and {gate.Blockers.Count - lines.Count} more");
-            return string.Join(Environment.NewLine, lines);
+            return string.Join(System.Environment.NewLine, lines);
         }
 
         [ComRegisterFunction]
