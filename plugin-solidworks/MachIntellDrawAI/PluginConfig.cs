@@ -49,8 +49,12 @@ namespace MachIntellDrawAI
 
         private void Validate()
         {
-            if (!Uri.TryCreate(BackendUrl, UriKind.Absolute, out var uri) || uri.Scheme != Uri.UriSchemeHttps)
-                throw new InvalidOperationException("BackendUrl must be an absolute HTTPS URL.");
+            if (!Uri.TryCreate(BackendUrl, UriKind.Absolute, out var uri))
+                throw new InvalidOperationException("BackendUrl must be an absolute URL.");
+            // Require HTTPS for real hosts; allow plain HTTP only for local loopback (development/testing).
+            var isLoopback = uri.IsLoopback; // matches localhost, 127.0.0.1, ::1
+            if (uri.Scheme != Uri.UriSchemeHttps && !(uri.Scheme == Uri.UriSchemeHttp && isLoopback))
+                throw new InvalidOperationException("BackendUrl must be an absolute HTTPS URL (plain HTTP is allowed only for localhost).");
             if (RequestTimeoutSeconds < 10 || RequestTimeoutSeconds > 300)
                 throw new InvalidOperationException("RequestTimeoutSeconds must be between 10 and 300.");
             var template = GetTemplate(Preferences.StandardProfileId);
