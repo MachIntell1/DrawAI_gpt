@@ -49,6 +49,19 @@ namespace MachIntellDrawAI
             try
             {
                 _generation?.Dispose();
+                if (_commands != null)
+                {
+                    // Remove the ribbon tabs we created so they don't persist or duplicate on reload.
+                    foreach (var docType in new[] { (int)swDocumentTypes_e.swDocPART, (int)swDocumentTypes_e.swDocDRAWING })
+                    {
+                        try
+                        {
+                            var tab = _commands.GetCommandTab(docType, "MachIntell Manufacturing Drawing");
+                            if (tab != null) _commands.RemoveCommandTab(tab);
+                        }
+                        catch { }
+                    }
+                }
                 _commands?.RemoveCommandGroup2(CommandGroupId, false);
                 if (_commands != null) Marshal.FinalReleaseComObject(_commands);
                 if (_app != null) Marshal.FinalReleaseComObject(_app);
@@ -137,19 +150,19 @@ namespace MachIntellDrawAI
             // Only a null group is fatal; a nonzero 'errors' can be a benign cache/ID notice
             if (group == null)
                 throw new InvalidOperationException("SolidWorks command group could not be created (error " + errors + ").");
-            group.AddCommandItem2(
+            var generateIndex = group.AddCommandItem2(
                 "Generate Verified Draft", -1,
                 "Create a new drawing from the exact v2 plan",
                 "Generate Verified Draft", 0,
                 nameof(GenerateVerifiedDraft), nameof(GenerateEnable), 0,
                 (int)swCommandItemType_e.swMenuItem | (int)swCommandItemType_e.swToolbarItem);
-            group.AddCommandItem2(
+            var approveIndex = group.AddCommandItem2(
                 "Validate and Approve Release", -1,
                 "Revalidate associations, layout, metadata and approval",
                 "Validate and Approve", 1,
                 nameof(ValidateApproveRelease), nameof(ApproveEnable), 1,
                 (int)swCommandItemType_e.swMenuItem | (int)swCommandItemType_e.swToolbarItem);
-            group.AddCommandItem2(
+            var settingsIndex = group.AddCommandItem2(
                 "Settings Location", -1,
                 "Show the controlled settings path",
                 "Settings Location", 2,
@@ -158,6 +171,43 @@ namespace MachIntellDrawAI
             group.HasMenu = true;
             group.HasToolbar = true;
             if (!group.Activate()) throw new InvalidOperationException("SolidWorks command group activation failed.");
+
+            // Resolve the global command IDs assigned to each item; these are needed to place
+            // the buttons on a CommandManager ribbon tab (a toolbar/menu alone is not shown as a tab).
+            var generateId = group.CommandID[generateIndex];
+            var approveId = group.CommandID[approveIndex];
+            var settingsId = group.CommandID[settingsIndex];
+
+            // Build a visible CommandManager tab for each relevant document type. Without an
+            // explicit CommandTab, modern SolidWorks does not surface the group as a ribbon tab.
+            AddRibbonTab((int)swDocumentTypes_e.swDocPART, generateId, approveId, settingsId);
+            AddRibbonTab((int)swDocumentTypes_e.swDocDRAWING, generateId, approveId, settingsId);
+        }
+
+        private void AddRibbonTab(int docType, int generateId, int approveId, int settingsId)
+        {
+            if (_commands == null) return;
+
+            const string tabTitle = "MachIntell Manufacturing Drawing";
+
+            // Remove any stale tab with this title so we don't stack duplicates across reloads.
+            var existing = _commands.GetCommandTab(docType, tabTitle);
+            if (existing != null) _commands.RemoveCommandTab(existing);
+
+            var tab = _commands.AddCommandTab(docType, tabTitle);
+            if (tab == null) return;
+
+            var box = tab.AddCommandTabBox();
+            if (box == null) return;
+
+            var commandIds = new[] { generateId, approveId, settingsId };
+            var textTypes = new[]
+            {
+                (int)swCommandTabButtonTextDisplay_e.swCommandTabButton_TextBelow,
+                (int)swCommandTabButtonTextDisplay_e.swCommandTabButton_TextBelow,
+                (int)swCommandTabButtonTextDisplay_e.swCommandTabButton_TextBelow
+            };
+            box.AddCommands(commandIds, textTypes);
         }
 
         private DrawingGenerationService RequiredGeneration() => _generation ?? throw new InvalidOperationException("Add-in services are not initialized.");
