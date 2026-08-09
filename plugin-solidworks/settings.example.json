@@ -1,0 +1,30 @@
+{
+  "BackendUrl": "https://drawing-api.example.com",
+  "ApiKeyEnvironmentVariable": "MACHINTELL_DRAWING_API_KEY",
+  "Preferences": {
+    "StandardProfileId": "ISO_METRIC_2025",
+    "SheetSize": "A3",
+    "Scale": "AUTO",
+    "IncludeIsometric": true,
+    "IncludeSectionView": true,
+    "IncludeHoleTable": false,
+    "ShowHiddenLines": false,
+    "AnnotationClearanceMm": 8.0,
+    "ViewClearanceMm": 20.0
+  },
+  "Templates": [
+    {
+      "ProfileId": "ISO_METRIC_2025",
+      "TemplatePath": "C:\\ControlledTemplates\\ISO_A3_revC.drwdot",
+      "ExpectedProjection": "FIRST_ANGLE",
+      "Revision": "C"
+    },
+    {
+      "ProfileId": "ASME_Y14_2018",
+      "TemplatePath": "C:\\ControlledTemplates\\ASME_B_revB.drwdot",
+      "ExpectedProjection": "THIRD_ANGLE",
+      "Revision": "B"
+    }
+  ],
+  "RequestTimeoutSeconds": 90
+}

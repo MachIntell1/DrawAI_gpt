@@ -1,0 +1,113 @@
+from enum import Enum
+
+
+class StrEnum(str, Enum):
+    def __str__(self) -> str:
+        return self.value
+
+
+class StandardFamily(StrEnum):
+    ISO = "ISO"
+    ASME = "ASME"
+
+
+class ProjectionMethod(StrEnum):
+    FIRST_ANGLE = "FIRST_ANGLE"
+    THIRD_ANGLE = "THIRD_ANGLE"
+
+
+class UnitSystem(StrEnum):
+    MM = "MM"
+    INCH = "INCH"
+
+
+class DocumentType(StrEnum):
+    PART = "PART"
+    ASSEMBLY = "ASSEMBLY"
+
+
+class EvidenceSource(StrEnum):
+    SOLIDWORKS_NATIVE = "SOLIDWORKS_NATIVE"
+    SOLIDWORKS_PMI = "SOLIDWORKS_PMI"
+    COMPANY_POLICY = "COMPANY_POLICY"
+    BREP_TOPOLOGY = "BREP_TOPOLOGY"
+    GEOMETRIC_INFERENCE = "GEOMETRIC_INFERENCE"
+
+
+class FeatureKind(StrEnum):
+    PLAIN_HOLE = "PLAIN_HOLE"
+    COUNTERBORE_HOLE = "COUNTERBORE_HOLE"
+    COUNTERSINK_HOLE = "COUNTERSINK_HOLE"
+    TAPPED_HOLE = "TAPPED_HOLE"
+    ADVANCED_HOLE = "ADVANCED_HOLE"
+    EDGE_NOTCH = "EDGE_NOTCH"
+    SLOT = "SLOT"
+    POCKET = "POCKET"
+    BOSS = "BOSS"
+    FILLET = "FILLET"
+    CHAMFER = "CHAMFER"
+    BODY = "BODY"
+    UNKNOWN = "UNKNOWN"
+
+
+class RequirementKind(StrEnum):
+    OVERALL_SIZE = "OVERALL_SIZE"
+    FEATURE_SIZE = "FEATURE_SIZE"
+    FEATURE_LOCATION = "FEATURE_LOCATION"
+    FEATURE_DEPTH = "FEATURE_DEPTH"
+    PATTERN = "PATTERN"
+    HOLE_CALLOUT = "HOLE_CALLOUT"
+    THREAD_CALLOUT = "THREAD_CALLOUT"
+    RADIUS = "RADIUS"
+    CHAMFER = "CHAMFER"
+    ANGLE = "ANGLE"
+    GEOMETRIC_TOLERANCE = "GEOMETRIC_TOLERANCE"
+    SURFACE_TEXTURE = "SURFACE_TEXTURE"
+
+
+class ViewKind(StrEnum):
+    BASE = "BASE"
+    PROJECTED = "PROJECTED"
+    SECTION = "SECTION"
+    DETAIL = "DETAIL"
+    ISOMETRIC = "ISOMETRIC"
+
+
+class Orientation(StrEnum):
+    FRONT = "FRONT"
+    BACK = "BACK"
+    TOP = "TOP"
+    BOTTOM = "BOTTOM"
+    LEFT = "LEFT"
+    RIGHT = "RIGHT"
+    ISOMETRIC = "ISOMETRIC"
+
+
+class AnnotationKind(StrEnum):
+    CENTER_MARK = "CENTER_MARK"
+    CENTERLINE = "CENTERLINE"
+    DATUM = "DATUM"
+    FEATURE_CONTROL_FRAME = "FEATURE_CONTROL_FRAME"
+    SURFACE_TEXTURE = "SURFACE_TEXTURE"
+    PROJECTION_SYMBOL = "PROJECTION_SYMBOL"
+    DRAFT_WATERMARK = "DRAFT_WATERMARK"
+
+
+class Severity(StrEnum):
+    INFO = "INFO"
+    WARNING = "WARNING"
+    BLOCKER = "BLOCKER"
+
+
+class ReleaseStatus(StrEnum):
+    DRAFT = "DRAFT"
+    REVIEW_REQUIRED = "REVIEW_REQUIRED"
+    RELEASE_READY = "RELEASE_READY"
+
+
+class AssociationStatus(StrEnum):
+    ASSOCIATIVE = "ASSOCIATIVE"
+    MISSING = "MISSING"
+    ORPHAN = "ORPHAN"
+    AMBIGUOUS = "AMBIGUOUS"
+
