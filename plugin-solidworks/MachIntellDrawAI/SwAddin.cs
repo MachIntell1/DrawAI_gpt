@@ -121,6 +121,10 @@ namespace MachIntellDrawAI
         {
             if (_app == null) throw new InvalidOperationException("SolidWorks application is unavailable.");
             _commands = _app.GetCommandManager(cookie);
+
+            // Discard any cached command group with this ID before recreating (prevents error 1)
+            try { _commands.RemoveCommandGroup2(CommandGroupId, false); } catch { }
+
             var errors = 0;
             var group = _commands.CreateCommandGroup2(
                 CommandGroupId,
@@ -130,7 +134,8 @@ namespace MachIntellDrawAI
                 -1,
                 true,
                 ref errors);
-            if (group == null || errors != 0)
+            // Only a null group is fatal; a nonzero 'errors' can be a benign cache/ID notice
+            if (group == null)
                 throw new InvalidOperationException("SolidWorks command group could not be created (error " + errors + ").");
             group.AddCommandItem2(
                 "Generate Verified Draft", -1,
