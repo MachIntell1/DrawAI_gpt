@@ -100,9 +100,10 @@ namespace MachIntellDrawAI.SolidWorks
 
         private static string? ReadModelMaterial(IPartDoc part, string configuration)
         {
-            var args = new object?[] { configuration, string.Empty };
-            if (!ComCall.Try(part, "GetMaterialPropertyName2", args, out var result)) return null;
-            var value = Convert.ToString(result, CultureInfo.InvariantCulture);
+            // Strongly-typed direct call. Late binding (InvokeMember) cannot marshal the ByRef 'out'
+            // database parameter and throws DISP_E_TYPEMISMATCH (0x80020005).
+            // Signature: string GetMaterialPropertyName2(string ConfigName, out string Database)
+            var value = part.GetMaterialPropertyName2(configuration, out _);
             return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         }
 
