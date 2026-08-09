@@ -84,13 +84,18 @@ namespace MachIntellDrawAI.SolidWorks
 
         private static string? ReadProperty(ICustomPropertyManager manager, string property)
         {
-            var args = new object?[] { property, false, string.Empty, string.Empty, false, false };
-            if (ComCall.Try(manager, "Get6", args, out _))
-                return Convert.ToString(args[3], CultureInfo.InvariantCulture);
-            args = new object?[] { property, false, string.Empty, string.Empty };
-            if (ComCall.Try(manager, "Get4", args, out _))
-                return Convert.ToString(args[3], CultureInfo.InvariantCulture);
-            throw new MissingMethodException("SolidWorks custom-property Get6/Get4 is unavailable.");
+            // Call the strongly-typed interop directly. Late binding (InvokeMember) cannot marshal the
+            // ByRef 'out' parameters and throws DISP_E_TYPEMISMATCH (0x80020005). Get6 is the overload
+            // used elsewhere in this project (DrawingVerifier / DrawingDocumentFactory) and is available.
+            manager.Get6(property, false, out var valOut, out var resolvedOut, out _, out _);
+            return PickValue(resolvedOut, valOut);
+        }
+
+        // Prefer the resolved value (evaluated expressions); fall back to the raw stored value.
+        private static string? PickValue(string resolved, string raw)
+        {
+            if (!string.IsNullOrWhiteSpace(resolved)) return resolved;
+            return string.IsNullOrWhiteSpace(raw) ? null : raw;
         }
 
         private static string? ReadModelMaterial(IPartDoc part, string configuration)
